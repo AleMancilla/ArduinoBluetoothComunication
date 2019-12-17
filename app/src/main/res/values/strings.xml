@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ArduinoBluetoothComunicacion</string>
+    <string name="bt_conectarbt">Conectar con Dispositivo Bluetooth</string>
+    <string name="bt_controlMando">MANDO CONTROL</string>
+    <string name="bt_controlMancoAuto">MANDO CONTROL AUTOMOVIL</string>
+    <string name="bt_MonitorSerial">MONITOR SERIAL</string>
+    <string name="bt_ControlPorVoz">CONTROL POR VOZ</string>
+    <string name="bt_Botones">BOTONES</string>
+    <string name="bt_tutoriales">TUTORIALES Y GUIAS</string>
 </resources>
