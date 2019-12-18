@@ -20,7 +20,7 @@
             android:padding="5dp">
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/id_bt_conectar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/bt_conectarbt" />
