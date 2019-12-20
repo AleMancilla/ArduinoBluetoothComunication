@@ -2,10 +2,13 @@ package com.example.arduinobluetoothcomunicacion
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
+import java.io.IOException
 
 class ConectarBluetooth : AppCompatActivity() {
 
@@ -33,7 +36,7 @@ class ConectarBluetooth : AppCompatActivity() {
         {
             btnOff.isEnabled = false
             btnOn.isEnabled = false
-            Toast.makeText(this, "DISPOSITIVO NO CONECTADO A BLUETOOTH", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "DISPOSITIVO NO SOPORTA A BLUETOOTH", Toast.LENGTH_SHORT).show()
         }
         else
         {
@@ -87,6 +90,38 @@ class ConectarBluetooth : AppCompatActivity() {
         else
         {
             Toast.makeText(this,"BLUETOOTH IS ALREADY ON",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    ////////////////////////////////////////////////
+    private inner class ConnectThread(device: BluetoothDevice) : Thread() {
+
+        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
+            device.createRfcommSocketToServiceRecord(MY_UUID)
+        }
+
+        public override fun run() {
+            // Cancel discovery because it otherwise slows down the connection.
+            bluetoothAdapter?.cancelDiscovery()
+
+            mmSocket?.use { socket ->
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                socket.connect()
+
+                // The connection attempt succeeded. Perform work associated with
+                // the connection in a separate thread.
+                manageMyConnectedSocket(socket)
+            }
+        }
+
+        // Closes the client socket and causes the thread to finish.
+        fun cancel() {
+            try {
+                mmSocket?.close()
+            } catch (e: IOException) {
+                Log.e("Mensaje ", "Could not close the client socket", e)
+            }
         }
     }
 }
