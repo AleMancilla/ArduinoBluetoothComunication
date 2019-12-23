@@ -9,6 +9,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import java.io.IOException
+import androidx.core.app.ComponentActivity
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import java.util.*
+import kotlin.collections.ArrayList
+
 
 class ConectarBluetooth : AppCompatActivity() {
 
@@ -20,6 +27,12 @@ class ConectarBluetooth : AppCompatActivity() {
     lateinit var btnOn: Button
     lateinit var btnOff: Button
     private val REQUEST_CODE = 1
+
+    companion object {
+        val EXTRA_ADDRESS: String = "Devisse Address"
+    }
+
+    //private val BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,14 +74,25 @@ class ConectarBluetooth : AppCompatActivity() {
     private fun getPairedDevicesList()
     {
         bluetoothPairedDevices = bluetoothAdapter.bondedDevices
+        val list : ArrayList<BluetoothDevice> = ArrayList()
+
         val listView = ArrayList<String>()
         for (bluetoothDevices:BluetoothDevice in bluetoothPairedDevices)
         {
             listView.add(bluetoothDevices.name+"\n"+bluetoothDevices.address)
+            list.add(bluetoothDevices)
         }
         Toast.makeText(this, "Mostrar dispositivos emparejados",Toast.LENGTH_SHORT).show()
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1,listView)
         pairedListView.adapter = adapter
+        pairedListView.onItemClickListener = AdapterView.OnItemClickListener{_,_,position,_ ->
+            val device: BluetoothDevice = list[position]
+            val address: String = device.address
+
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(EXTRA_ADDRESS, address)
+             startActivity(intent)
+        }
     }
 
     //off bluetooth
@@ -93,35 +117,5 @@ class ConectarBluetooth : AppCompatActivity() {
         }
     }
 
-    ////////////////////////////////////////////////
-    private inner class ConnectThread(device: BluetoothDevice) : Thread() {
 
-        private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
-            device.createRfcommSocketToServiceRecord(MY_UUID)
-        }
-
-        public override fun run() {
-            // Cancel discovery because it otherwise slows down the connection.
-            bluetoothAdapter?.cancelDiscovery()
-
-            mmSocket?.use { socket ->
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
-                socket.connect()
-
-                // The connection attempt succeeded. Perform work associated with
-                // the connection in a separate thread.
-                manageMyConnectedSocket(socket)
-            }
-        }
-
-        // Closes the client socket and causes the thread to finish.
-        fun cancel() {
-            try {
-                mmSocket?.close()
-            } catch (e: IOException) {
-                Log.e("Mensaje ", "Could not close the client socket", e)
-            }
-        }
-    }
 }
