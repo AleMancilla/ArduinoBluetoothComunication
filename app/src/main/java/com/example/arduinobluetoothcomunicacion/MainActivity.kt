@@ -18,14 +18,16 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     lateinit var bt_conectar: Button
+    lateinit var bt_monitorSerial: Button
 
     companion object {
         var m_myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-        var m_bluetooth_Socket: BluetoothSocket? = null
+        public var m_bluetooth_Socket: BluetoothSocket? = null
         lateinit var m_progress: ProgressDialog
         lateinit var m_bluetoothAdapter: BluetoothAdapter
         var m_isConnected: Boolean = false
         lateinit var m_adrres: String
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,11 +38,23 @@ class MainActivity : AppCompatActivity() {
         ConnectToDevice(this).execute()
 
         bt_conectar = findViewById(R.id.id_bt_conectar)
+        bt_monitorSerial = findViewById(R.id.id_btn_monitorSerial)
+
         //bt_conectar.setOnClickListener {
         //    val intent = Intent(this@MainActivity, ConectarBluetooth::class.java)
         //    startActivity(intent)
         //}
+
+        bt_monitorSerial.setOnClickListener {
+            NuevoIntentConectado(m_adrres)
+        }
     }
+
+    private fun NuevoIntentConectado(mAdrres: String?) {
+        val intent = Intent(this, MonitorSerial::class.java)
+        startActivity(intent)
+    }
+
 
     private class ConnectToDevice(c: Context) : AsyncTask<Void, Void, String>() {
 

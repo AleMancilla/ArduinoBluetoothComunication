@@ -58,7 +58,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/id_btn_monitorSerial"
                     android:layout_width="100dp"
                     android:layout_height="175dp"
                     android:layout_weight="1"

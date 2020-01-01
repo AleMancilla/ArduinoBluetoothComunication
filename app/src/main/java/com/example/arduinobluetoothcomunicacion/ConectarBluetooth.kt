@@ -28,6 +28,7 @@ class ConectarBluetooth : AppCompatActivity() {
     lateinit var btnOff: Button
     private val REQUEST_CODE = 1
 
+
     companion object {
         val EXTRA_ADDRESS: String = "Devisse Address"
     }
@@ -62,6 +63,7 @@ class ConectarBluetooth : AppCompatActivity() {
             if(bluetoothAdapter.isEnabled)
             {
                 getPairedDevicesList()
+
             }
             else
             {
