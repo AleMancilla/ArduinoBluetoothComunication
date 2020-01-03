@@ -12,15 +12,18 @@ class MonitorSerial : AppCompatActivity() {
     lateinit var bt_enviar : Button
     lateinit var dato : String
     lateinit var txtprueba : TextView
-    lateinit var listView : ListView
-    var mutableList: MutableList<String> = mutableListOf()
-    lateinit var adp : ArrayAdapter<String>
+    var txt_acumulado =""
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_monitor_serial)
 
-        listView = findViewById(R.id.id_lista)
+        ///////////////////////////////////////
+
+        ///////////////////////////////////////
         texto = findViewById(R.id.id_entrada)
         txtprueba = findViewById(R.id.id_prueba)
         bt_enviar = findViewById(R.id.id_bt_enviar)
@@ -31,7 +34,7 @@ class MonitorSerial : AppCompatActivity() {
 
     private fun enviarDatos() {
         dato = texto.text.toString()
-        txtprueba.text=dato
+        txtprueba.text="Hubo un error de coneccion verifique que el bluetooth este correctamente conectado"
         sendCommand(dato)
     }
 
@@ -39,15 +42,14 @@ class MonitorSerial : AppCompatActivity() {
         if (MainActivity.m_bluetooth_Socket != null) {
             try{
                 MainActivity.m_bluetooth_Socket!!.outputStream.write(input.toByteArray())
-                mutableList.add(input)
-                adp = ArrayAdapter(this, android.R.layout.simple_list_item_1,mutableList)
-                listView.adapter = adp
+                txt_acumulado = txt_acumulado + "\nArduino -> "+input
+                txtprueba.text = txt_acumulado
+
                 Toast.makeText(this, "Dato enviado: "+input,Toast.LENGTH_SHORT).show()
             } catch(e: IOException) {
                 e.printStackTrace()
             }
         }
     }
-
 
 }
